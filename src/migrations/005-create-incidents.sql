@@ -1,6 +1,6 @@
 CREATE TABLE incidents (
     incident_id SERIAL PRIMARY KEY,
-    delivery_id INT NOT NULL,
+    delivery_id integer NOT NULL,
     incident_time TIMESTAMP NOT NULL,
     description TEXT NOT NULL,
     outcome TEXT,

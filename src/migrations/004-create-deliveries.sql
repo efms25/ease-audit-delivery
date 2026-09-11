@@ -1,7 +1,7 @@
 CREATE TABLE deliveries (
     delivery_id SERIAL PRIMARY KEY,
-    client_id INT NOT NULL,
-    driver_id INT,
+    client_id integer NOT NULL,
+    driver_id integer,
     item_name TEXT NOT NULL,
     address TEXT NOT NULL,
     status delivery_status DEFAULT 'pending',
