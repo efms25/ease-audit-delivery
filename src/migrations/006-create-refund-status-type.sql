@@ -1,0 +1,1 @@
+CREATE TYPE refund_status AS ENUM('in_process', 'not_refunded', 'refunded');
