@@ -1,12 +1,16 @@
 services:
+
   db: 
-    image: postgres
+    image: postgres:latest
     container_name: postgress_poc
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_PASSWORD: postgress_pass
-
+      POSTGRES_DB: ease_queue_db
+      POSTGRES_USER: ease_queue_user
+      POSTGRES_PASSWORD: ease_queue_pass
+    ports:
+      - "5432:5432"
   adminer:
     image: adminer
     container_name: adminer_poc
