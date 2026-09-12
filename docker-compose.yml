@@ -1,0 +1,15 @@
+services:
+  db: 
+    image: postgres
+    container_name: postgress_poc
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: postgress_pass
+
+  adminer:
+    image: adminer
+    container_name: adminer_poc
+    restart: always
+    ports:
+      - 8085:8080
