@@ -14,11 +14,11 @@ const connection = (function () {
     client = new Pool({
       host: dbAccess.POSTGRES_HOST,
       database: dbAccess.POSTGRES_DB,
-      user: POSTGRES_USER,
+      user: dbAccess.POSTGRES_USER,
       password: dbAccess.POSTGRES_PASSWORD,
     });
   }
-
+  console.info("Database running...\n\n")
   return {
     client: client,
   };

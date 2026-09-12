@@ -1,4 +1,4 @@
-CREATE TABLE deliveries (
+CREATE TABLE IF NOT EXISTS deliveries (
     delivery_id SERIAL PRIMARY KEY,
     client_id integer NOT NULL,
     driver_id integer,

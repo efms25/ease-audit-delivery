@@ -1,4 +1,4 @@
-CREATE TABLE incidents (
+CREATE TABLE IF NOT EXISTS incidents (
     incident_id SERIAL PRIMARY KEY,
     delivery_id integer NOT NULL,
     incident_time TIMESTAMP NOT NULL,

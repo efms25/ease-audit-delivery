@@ -1,1 +1,1 @@
-CREATE TYPE refund_status AS ENUM('in_process', 'not_refunded', 'refunded');
+CREATE TYPE IF NOT EXISTS refund_status AS ENUM('in_process', 'not_refunded', 'refunded');
