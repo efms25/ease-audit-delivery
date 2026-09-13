@@ -1,6 +1,6 @@
 const { readdir, readFile } = require("node:fs/promises");
 const { connection } = require("../database/connection");
-const { pgTypeCreated } = require("./migration-validations");
+const { isTypeCreated } = require("./validations");
 
 (async function () {
   const db = connection.client;
@@ -16,7 +16,7 @@ const { pgTypeCreated } = require("./migration-validations");
     const fileBuffer = await readFile(`${path}/${file}`);
     const query = fileBuffer.toLocaleString();
 
-    if(await pgTypeCreated(query, connection)) {
+    if(await isTypeCreated(query)) {
       console.log(`☑️ ${file} already executed!`)
       continue;
     }
