@@ -1,3 +1,5 @@
+const { find } = require("../services/delivery.service");
+
 module.exports = {
   async registerDeliveryCommands(program) {
     const delivery = program.command("delivery").description("Delivery handle");
@@ -7,37 +9,39 @@ module.exports = {
       .description("Return a list of deliveries")
       .option(
         "--filter-by <string>",
-        "field to be filtedred. Allowed: client, driver, status or date",
+        "field to be filtedred. Allowed: client, driver, status or createdAt",
       )
       .option(
         "--filter-val <string>",
         "Value to be filtered by. Example: if --filter-by=status, --filter-val=pending",
-      ).action((_, options) => {
-        console.table([{name: "test-name", status: "test-status"},{name: "test-name2", status: "test-status2"}], ['name', 'status']);
+      )
+      .action(async (options) => {
+        const result = await find(options.filterBy, options.filterVal);
+        console.table(result);
       });
 
-    (delivery
+    delivery
       .command("list:assigned")
       .description("Return only deliveries with client and driver assigned")
       .option(
         "--filter-by <string>",
-        "field to be filtedred. Allowed: client, driver, status or date",
-      ).
-      option(
+        "field to be filtedred. Allowed: client, driver, status or createdAt",
+      )
+      .option(
         "--filter-val <string>",
         "Value to be filtered by. Example: if --filter-by=status, --filter-val=pending",
-      ));
+      );
 
-    (delivery
+    delivery
       .command("list:bind-incidents")
       .description("Return all deliveries with extra incidents data")
       .option(
         "--filter-by <string>",
-        "field to be filtedred. Allowed: client, driver, status or date",
-      ).
-      option(
+        "field to be filtedred. Allowed: client, driver, status or createdAt",
+      )
+      .option(
         "--filter-val <string>",
         "Value to be filtered by. Example: if --filter-by=status, --filter-val=pending",
-      ));
+      );
   },
 };
