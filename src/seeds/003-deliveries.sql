@@ -2,7 +2,7 @@ INSERT INTO deliveries (
     client_id,
     driver_id,
     item_name,
-    address,
+    address
 ) VALUES
     (
         (SELECT client_id FROM clients WHERE email = 'client-1@mail.com'),

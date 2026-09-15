@@ -16,8 +16,8 @@ const { isTypeCreated } = require("./validations");
     const fileBuffer = await readFile(`${path}/${file}`);
     const query = fileBuffer.toLocaleString();
 
-    if(await isTypeCreated(query)) {
-      console.log(`☑️ ${file} already executed!`)
+    if (await isTypeCreated(query)) {
+      console.log(`☑️ ${file} already executed!`);
       continue;
     }
 

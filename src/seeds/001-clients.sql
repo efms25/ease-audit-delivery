@@ -1,7 +1,7 @@
 INSERT INTO clients (
     name,
     email,
-    adress,
+    address
 ) VALUES
     ('Client 1', 'client-1@mail.com', 'Address 1, distric 1'),
     ('Client 2', 'client-2@mail.com', 'Address 2, distric 2'),

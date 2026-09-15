@@ -1,4 +1,4 @@
-INSERT INTO (
+INSERT INTO refunds (
     incident_id,
     refund_status
 ) VALUES
