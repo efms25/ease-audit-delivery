@@ -27,7 +27,7 @@ const { isTableCreated, isTableEmpty } = require("./validations");
         continue;
       }
 
-      const result = await db.query(query);
+      await db.query(query);
       // console.log(result);
       console.log(`✅ ${file}`);
 
@@ -37,4 +37,5 @@ const { isTableCreated, isTableEmpty } = require("./validations");
       throw new Error(`Seeding failed. ${err}`);
     }
   }
+  return;
 })();

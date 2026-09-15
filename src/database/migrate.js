@@ -33,4 +33,5 @@ const { isTypeCreated } = require("./validations");
   }
 
   console.log("\n\nMigration completed successfully!");
+  return;
 })();
