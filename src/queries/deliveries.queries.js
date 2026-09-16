@@ -44,7 +44,7 @@ module.exports = {
     };
   },
   async findAssigned(args = {}) {
-    const data = { ...defaultData, ...args };
+    const data = { ...defaultData, ...args, allowedTypes };
     const db = connection.client;
     const params = [];
 
@@ -80,7 +80,14 @@ module.exports = {
     };
   },
   async findWithIncidents(args = {}) {
-    const data = { ...defaultData, ...args };
+    const allowedTypes = {
+      ...ALLOWED_FILTERS,
+      ...{
+        incident_time: "incident_time",
+        incident: "incident_id"
+      },
+    };
+    const data = { ...defaultData, ...args, allowedTypes };
     const db = connection.client;
     const params = [];
 
@@ -102,10 +109,10 @@ module.exports = {
       params.push(data.filterVal);
     }
     const filteredQuery = sql;
-    
+
     sql += " ORDER BY incident_time DESC NULLS LAST";
-    sql = sql.replace(';','') + ';';
-    
+    sql = sql.replace(";", "") + ";";
+
     sql = attachPaginationQuery(sql, data);
 
     const result = await db.query(sql, params);
