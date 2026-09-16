@@ -1,47 +1,36 @@
 const { find } = require("../services/delivery.service");
+const {
+  addFilterOptions,
+  addPaginationOptions,
+} = require("./command-fragments.helper");
 
 module.exports = {
   async registerDeliveryCommands(program) {
     const delivery = program.command("delivery").description("Delivery handle");
 
-    delivery
+    const list = delivery
       .command("list")
       .description("Return a list of deliveries")
-      .option(
-        "--filter-by <string>",
-        "field to be filtedred. Allowed: client, driver, status or createdAt",
-      )
-      .option(
-        "--filter-val <string>",
-        "Value to be filtered by. Example: if --filter-by=status, --filter-val=pending",
-      )
       .action(async (options) => {
-        const result = await find(options.filterBy, options.filterVal);
-        console.table(result);
+        await find(options);
+        process.exit(0);
       });
 
-    delivery
-      .command("list:assigned")
-      .description("Return only deliveries with client and driver assigned")
-      .option(
-        "--filter-by <string>",
-        "field to be filtedred. Allowed: client, driver, status or createdAt",
-      )
-      .option(
-        "--filter-val <string>",
-        "Value to be filtered by. Example: if --filter-by=status, --filter-val=pending",
-      );
+    addFilterOptions(list, ["client", "driver", "status", "date"]);
+    addPaginationOptions(list);
 
-    delivery
+    const listAssigned = delivery
+      .command("list:assigned")
+      .description("Return only deliveries with client and driver assigned");
+
+    addFilterOptions(listAssigned, ["client", "driver", "status", "date"]);
+    addPaginationOptions(listAssigned);
+
+    const listBindIncidents = delivery
       .command("list:bind-incidents")
-      .description("Return all deliveries with extra incidents data")
-      .option(
-        "--filter-by <string>",
-        "field to be filtedred. Allowed: client, driver, status or createdAt",
-      )
-      .option(
-        "--filter-val <string>",
-        "Value to be filtered by. Example: if --filter-by=status, --filter-val=pending",
-      );
+      .description("Return all deliveries with extra incidents data");
+
+    addFilterOptions(listBindIncidents, ["client", "driver", "status", "date"]);
+    addPaginationOptions(listBindIncidents);
   },
 };

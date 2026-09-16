@@ -1,7 +1,11 @@
 const { find } = require("../queries/deliveries.queries");
 
 module.exports = {
-    async find(filterBy, filterData) {
-        return await find(filterBy, filterData);
+    async find(data) {
+        const result = await find(data);
+        console.table(result.data);
+        console.log(`Page: ${result.pagination.currentPage}/${result.pagination.totalPages}`)
+        console.log(`Total items: ${result.pagination.totalItems}`)
+        return result;
     }
 }
