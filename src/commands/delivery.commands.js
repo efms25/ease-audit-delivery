@@ -1,4 +1,4 @@
-const { find } = require("../services/delivery.service");
+const { find, findAssigned, findWithIncidents } = require("../services/delivery.service");
 const {
   addFilterOptions,
   addPaginationOptions,
@@ -21,14 +21,22 @@ module.exports = {
 
     const listAssigned = delivery
       .command("list:assigned")
-      .description("Return only deliveries with client and driver assigned");
+      .description("Return only deliveries with client and driver assigned")
+      .action(async (options) => {
+        await findAssigned(options);
+        process.exit(0);
+      });
 
     addFilterOptions(listAssigned, ["client", "driver", "status", "date"]);
     addPaginationOptions(listAssigned);
 
     const listBindIncidents = delivery
       .command("list:bind-incidents")
-      .description("Return all deliveries with extra incidents data");
+      .description("Return all deliveries with extra incidents data")
+      .action(async (options) => {
+        await findWithIncidents(options);
+        process.exit(0);
+      });
 
     addFilterOptions(listBindIncidents, ["client", "driver", "status", "date"]);
     addPaginationOptions(listBindIncidents);

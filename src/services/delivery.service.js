@@ -1,11 +1,17 @@
-const { find } = require("../queries/deliveries.queries");
+const { find, findAssigned, findWithIncidents } = require("../queries/deliveries.queries");
+const {printResultsTable} = require('../cli/utils/print-results');
 
 module.exports = {
     async find(data) {
         const result = await find(data);
-        console.table(result.data);
-        console.log(`Page: ${result.pagination.currentPage}/${result.pagination.totalPages}`)
-        console.log(`Total items: ${result.pagination.totalItems}`)
-        return result;
+        printResultsTable(result);
+    },
+    async findAssigned(data) {
+        const result = await findAssigned(data);
+        printResultsTable(result);
+    },
+    async findWithIncidents(data) {
+        const result = await findWithIncidents(data);
+        printResultsTable(result);
     }
 }
