@@ -84,7 +84,7 @@ module.exports = {
       ...ALLOWED_FILTERS,
       ...{
         incident_time: "incident_time",
-        incident: "incident_id"
+        incident: "incident_id",
       },
     };
     const data = { ...defaultData, ...args, allowedTypes };
@@ -122,5 +122,68 @@ module.exports = {
       data: result.rows,
       pagination,
     };
+  },
+  async createDelivery(dataObject) {
+    const db = connection.client;
+    let placeholders;
+    let values = [];
+
+    if (Array.isArray(dataObject)) {
+      placeholders = dataObject
+        .map(
+          (_, idx) =>
+            `($${idx + 1}, $${idx + 2}, $${idx + 3}, $${idx + 4}, $${idx + 5})`,
+        )
+        .join(", ");
+      values = dataObject.flatMap((obj) => [
+        obj.client_id,
+        obj.driver_id ?? null,
+        obj.item_name,
+        obj.address,
+        obj.status ?? "pending",
+      ]);
+    } else {
+      placeholders = `($1, $2, $3, $4, $5)`;
+      values = [
+        dataObject.client_id,
+        dataObject.driver_id ?? null,
+        dataObject.item_name,
+        dataObject.address,
+        dataObject.status ?? "pending",
+      ];
+    }
+
+    const sql = `
+    INSERT INTO deliveries 
+    (client_id, driver_id, item_name, address, status)
+    VALUES 
+    ${placeholders};
+    `;
+
+    await db.query(sql, values);
+    console.log(`Added register`);
+  },
+  async updateDelivery(bodyData) {
+    const db = connection.client;
+    const { id: delivery_id, ...updateData } = bodyData;
+    const params = [delivery_id];
+  
+    const placeholder = Object.entries(updateData).reduce((acc, c) => {
+      if (!!c[1]) {
+        acc += `${c[0]} = $${params.length + 1}`;
+        params.push(c[1]);
+      }
+      return acc;
+    },'')
+
+    const sql = `
+      UPDATE deliveries SET ${placeholder}
+      WHERE delivery_id = $1
+    `;
+
+    await db.query(sql, params);
+    
+    console.log("Updated!");
+
   },
 };
