@@ -1,9 +1,9 @@
-const { createDelivery } = require("../queries/deliveries.queries");
 const {
   find,
   findAssigned,
   findWithIncidents,
   update,
+  create
 } = require("../services/delivery.service");
 const {
   addFilterOptions,
@@ -50,9 +50,9 @@ function registerMutationDeliveryCommands(delivery) {
     .command("create")
     .description(
       `Create new delivery: Structure: {
-        --client_id <int>, 
-        --driver_id <int>, 
-        --item_name <string>, 
+        --client <int>, 
+        --driver <int>, 
+        --item <string>, 
         --address <string>, 
         --status <'created' | 'undelivered' | 'pending' | 'delivered'> }
       `,
@@ -73,7 +73,7 @@ function registerMutationDeliveryCommands(delivery) {
         address: args.address,
         status: args.status,
       };
-      await createDelivery(dataArgs);
+      await create(dataArgs);
       process.exit(0);
     });
 
