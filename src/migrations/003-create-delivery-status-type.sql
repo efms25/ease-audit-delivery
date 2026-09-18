@@ -1,1 +1,1 @@
-CREATE TYPE delivery_status AS ENUM ('created', 'undelivered', 'pending', 'delivered');
+CREATE TYPE delivery_status AS ENUM ('created', 'undelivered', 'pending', 'delivered', 'refunded');
