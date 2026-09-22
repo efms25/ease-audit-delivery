@@ -4,7 +4,7 @@ const { isTypeCreated } = require("./validations");
 
 (async function () {
   const db = connection.client;
-  const path = "src/migrations";
+  const path = "src/migrations/postgres";
 
   const files = await readdir(path);
 

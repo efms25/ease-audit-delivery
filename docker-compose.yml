@@ -30,6 +30,19 @@ services:
       - "6379:6379"
     networks:
       - ease_network
+  mongo: 
+    image: mongo:8.3.11
+    container_name: mongo_poc
+    restart: unless-stopped
+    ports:
+      - "${MONGO_INITDB_ROOT_PORT:-27017}:27017"
+    volumes:
+      - mongo_poc_vol:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "${MONGO_INITDB_ROOT_USERNAME:-ease_mongo_usr}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_INITDB_ROOT_PASSWORD:-ease_mongo_pass}" 
+volumes:
+  mongo_poc_vol:
 
 networks:
   ease_network:

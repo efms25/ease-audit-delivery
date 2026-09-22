@@ -1,10 +1,10 @@
 const { Pool } = require("pg");
 
 const dbAccess = {
-  POSTGRES_HOST: "localhost",
-  POSTGRES_DB: "ease_queue_db",
-  POSTGRES_USER: "ease_queue_user",
-  POSTGRES_PASSWORD: "ease_queue_pass",
+  POSTGRES_HOST: process.env.POSTGRES_HOST ?? "localhost",
+  POSTGRES_DB: process.env.POSTGRES_DB ?? "ease_queue_db",
+  POSTGRES_USER: process.env.POSTGRES_USER ?? "ease_queue_user",
+  POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD ?? "ease_queue_pass",
 };
 
 const connection = (function () {
