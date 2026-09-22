@@ -1,7 +1,11 @@
-const { find, findAssigned, findWithIncidents, createDelivery, updateDelivery } = require("../queries/deliveries.queries");
+const { find, findAssigned, findWithIncidents, createDelivery, updateDelivery, findById } = require("../queries/deliveries.queries");
 const {printResultsTable} = require('../cli/utils/print-results');
 
 module.exports = {
+    async get(id) {
+        const result = await findById(id);
+        console.log(result);
+    },
     async find(data) {
         const result = await find(data);
         printResultsTable(result);

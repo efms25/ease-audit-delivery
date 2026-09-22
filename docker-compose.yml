@@ -11,9 +11,26 @@ services:
       POSTGRES_PASSWORD: ease_queue_pass
     ports:
       - "5432:5432"
+    networks:
+      - ease_network
+      
   adminer:
     image: adminer
     container_name: adminer_poc
     restart: always
     ports:
       - 8085:8080
+    networks:
+      - ease_network
+  redis:
+    image: redis:8.10-alpine
+    container_name: redis_poc
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - ease_network
+
+networks:
+  ease_network:
+    driver: bridge

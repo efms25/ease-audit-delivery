@@ -3,7 +3,8 @@ const {
   findAssigned,
   findWithIncidents,
   update,
-  create
+  create,
+  get
 } = require("../services/delivery.service");
 const {
   addFilterOptions,
@@ -11,6 +12,14 @@ const {
 } = require("./command-fragments.helper");
 
 function registerQueryDeliveryCommands(delivery) {
+  delivery
+    .command("get <number>")
+    .description("Get a delivery by id")
+    .action(async (arg) => {
+      await get(arg);
+      process.exit(0);
+    })
+  
   const list = delivery
     .command("list")
     .description("Return a list of deliveries")

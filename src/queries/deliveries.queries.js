@@ -1,3 +1,8 @@
+const {
+  getDeliveryCache,
+  setDeliveryCache,
+  delDeliveryCache,
+} = require("../cache/delivery-cache");
 const { connection } = require("../database/connection");
 const {
   attachFilterQuery,
@@ -25,6 +30,22 @@ module.exports = {
     const data = { ...defaultData, ...args };
     const db = connection.client;
 
+    const cacheKey = [
+      "delivery",
+      `filter:${data.filterBy ?? "any"}:${data.filterVal ?? "all"}`,
+      `page:${data.offset}:${data.limit}`,
+    ]
+      .join(":")
+      .trim()
+      .replace(/\s+/g, "_")
+      .replace(/[^a-zA-Z0-9_:-]/g, "");
+
+    const cached = await getDeliveryCache(cacheKey);
+
+    if (cached) {
+      return cached;
+    }
+
     let sql = `SELECT * FROM deliveries;`;
     const params = [];
 
@@ -38,15 +59,53 @@ module.exports = {
     const result = await db.query(sql, params);
     const pagination = await paginationCounter(filteredQuery, data, params);
 
+    await setDeliveryCache(cacheKey, result.rows);
+
     return {
       data: result.rows,
       pagination,
     };
   },
+  async findById(id) {
+    const db = connection.client;
+
+    // cache verification
+    const cacheKey = `delivery:${id}`;
+
+    const cached = await getDeliveryCache(cacheKey);
+
+    if (cached) {
+      return cached;
+    }
+
+    const sql = "SELECT * FROM deliveries WHERE delivery_id = $1";
+
+    const result = await db.query(sql, [id]);
+
+    await setDeliveryCache(cacheKey, result.rows);
+
+    return result.rows;
+  },
   async findAssigned(args = {}) {
     const data = { ...defaultData, ...args, allowedTypes };
     const db = connection.client;
     const params = [];
+
+    const cacheKey = [
+      "delivery",
+      "assigned",
+      `filter:${data.filterBy ?? "any"}:${data.filterVal ?? "all"}`,
+      `page:${data.offset}:${data.limit}`,
+    ]
+      .join(":")
+      .replace(/\s+/g, "_")
+      .replace(/[^a-zA-Z0-9_:-]/g, "")
+      .trim();
+    const cached = await getDeliveryCache(cacheKey);
+
+    if (cached) {
+      return cached;
+    }
 
     let sql = `SELECT 
                 deliveries.delivery_id, 
@@ -74,6 +133,8 @@ module.exports = {
     const result = await db.query(sql, params);
     const pagination = await paginationCounter(filteredQuery, data, params);
 
+    await setDeliveryCache(cacheKey, result.rows);
+
     return {
       data: result.rows,
       pagination,
@@ -90,6 +151,17 @@ module.exports = {
     const data = { ...defaultData, ...args, allowedTypes };
     const db = connection.client;
     const params = [];
+
+    const cacheKey = [
+      "delivery",
+      "bindincidents",
+      `filter:${data.filterBy ?? "any"}:${data.filterVal ?? "all"}`,
+      `page:${data.offset}:${data.limit}`,
+    ]
+      .join(":")
+      .replace(/\s+/g, "_")
+      .replace(/[^a-zA-Z0-9_:-]/g, "")
+      .trim();
 
     let sql = `SELECT 
                 deliveries.delivery_id, 
@@ -117,6 +189,8 @@ module.exports = {
 
     const result = await db.query(sql, params);
     const pagination = await paginationCounter(filteredQuery, data, params);
+
+    await setDeliveryCache(cacheKey, result.rows);
 
     return {
       data: result.rows,
@@ -160,21 +234,24 @@ module.exports = {
     ${placeholders};
     `;
 
-    await db.query(sql, values);
+    const result = await db.query(sql, values);
+
+    console.log(result);
+
     console.log(`Added register`);
   },
   async updateDelivery(bodyData) {
     const db = connection.client;
     const { id: delivery_id, ...updateData } = bodyData;
     const params = [delivery_id];
-  
+
     const placeholder = Object.entries(updateData).reduce((acc, c) => {
       if (!!c[1]) {
         acc += `${c[0]} = $${params.length + 1}`;
         params.push(c[1]);
       }
       return acc;
-    },'')
+    }, "");
 
     const sql = `
       UPDATE deliveries SET ${placeholder}
@@ -182,8 +259,9 @@ module.exports = {
     `;
 
     await db.query(sql, params);
-    
-    console.log("Updated!");
+    const cacheKey = `delivery:${id}`;
+    delDeliveryCache(cacheKey);
 
+    console.log("Updated!");
   },
 };
