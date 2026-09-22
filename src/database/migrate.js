@@ -1,8 +1,11 @@
 const { readdir, readFile } = require("node:fs/promises");
 const { connection } = require("../database/connection");
 const { isTypeCreated } = require("./validations");
+const auditEventCollection = require('../migrations/mongo/001-create-audit-events-collection')
+const auditEventIndex = require('../migrations/mongo/002-create-audit-events-index');
+const { getDb, startMongoConnection } = require("./mongo");
 
-(async function () {
+async function migratePostgres() {
   const db = connection.client;
   const path = "src/migrations/postgres";
 
@@ -32,6 +35,40 @@ const { isTypeCreated } = require("./validations");
     }
   }
 
-  console.log("\n\nMigration completed successfully!");
+  console.log("\n\nPostgress migration completed successfully!");
   return;
+}
+
+async function migrateMongo() { 
+  await startMongoConnection();
+  const easeDb = getDb();
+  
+  const migrations = [
+    {
+      name: "Audit event collection",
+      up: auditEventCollection.up
+    },
+    {
+      name: "Audit event indexes",
+      up: auditEventIndex.up
+    }
+  ]
+
+  for(const migration of migrations) {
+    try {
+      await migration.up(easeDb);
+      console.log(`✅ ${migration.name} success!`)
+    } catch (err) {
+      console.log(`❌ ${migration.name} error`)
+      throw new Error(err.message);
+    }
+  }
+
+  console.log("\n\nMongodb migration completed successfully!");
+
+}
+
+(async function () {
+  await migratePostgres();
+  await migrateMongo();
 })();
