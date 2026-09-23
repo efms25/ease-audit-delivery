@@ -5,8 +5,8 @@ async function recordEvent(entity, eventLogType, event) {
     const db = getDb();
 
     
-    if (!EVENT_LOGS[eventLogType]) {
-        throw new Error(`EVENT_LOG type not found`);
+    if (!Object.values(EVENT_LOGS).includes(eventLogType)) {
+        throw new Error(`EVENT_LOG type not found: ${eventLogType}`);
     }
 
     if(!event.changes) {
@@ -16,7 +16,7 @@ async function recordEvent(entity, eventLogType, event) {
     const eventData = {
         entity,
         entityId: event.entityId ?? null,
-        type: EVENT_LOGS[eventLogType],
+        type: eventLogType,
         timestamp: new Date(),
         changes: {
             new: event.changes,
@@ -24,7 +24,7 @@ async function recordEvent(entity, eventLogType, event) {
         }
     }
     
-    db.collection("auditEvents").insertOne(eventData, function(err,res) {
+    await db.collection("auditEvents").insertOne(eventData, function(err,res) {
         if (err) throw err
         console.log('1 event inserted')
         db.close();

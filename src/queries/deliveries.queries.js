@@ -231,14 +231,13 @@ module.exports = {
     INSERT INTO deliveries 
     (client_id, driver_id, item_name, address, status)
     VALUES 
-    ${placeholders};
+    ${placeholders} RETURNING *;
     `;
 
     const result = await db.query(sql, values);
 
-    console.log(result);
-
     console.log(`Added register`);
+    return result.rows;
   },
   async updateDelivery(bodyData) {
     const db = connection.client;
@@ -255,7 +254,7 @@ module.exports = {
 
     const sql = `
       UPDATE deliveries SET ${placeholder}
-      WHERE delivery_id = $1
+      WHERE delivery_id = $1 RETURNING *
     `;
 
     await db.query(sql, params);

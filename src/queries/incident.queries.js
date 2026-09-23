@@ -40,11 +40,12 @@ async function createIncidents(dataObject) {
     INSERT INTO incidents 
     (delivery_id, incident_time, description, outcome)
     VALUES 
-    ${placeholders};
+    ${placeholders} RETURNING *;
     `;
 
-  await db.query(sql, values);
+  const result = await db.query(sql, values);
   console.log(`Added register`);
+  return result.rows;
 }
 
 async function updateIncidents(bodyData) {
@@ -62,7 +63,7 @@ async function updateIncidents(bodyData) {
 
   const sql = `
       UPDATE incidents SET ${placeholder}
-      WHERE incident_id = $1
+      WHERE incident_id = $1 RETURNING *
     `;
 
   await db.query(sql, params);

@@ -11,6 +11,15 @@ const defaultData = {
 };
 
 module.exports = {
+   async findById(id) {
+    const db = connection.client;
+
+    const sql = "SELECT * FROM refunds WHERE refund_id = $1";
+
+    const result = await db.query(sql, [id]);
+
+    return result.rows;
+  },
   async findRefunds(args = {}) {
     const data = { ...defaultData, ...args };
     const db = connection.client;
@@ -44,11 +53,12 @@ module.exports = {
     const sql = `
     INSERT INTO refunds
     (incident_id, refund_status) VALUES 
-    ${placeholders};
+    ${placeholders} RETURNING *;
     `;
 
-    await db.query(sql, values);
+    const result = await db.query(sql, values);
     console.log(`Added register`);
+    return result.rows;
   },
   async updateRefund(bodyData) {
     const db = connection.client;
@@ -67,7 +77,7 @@ module.exports = {
 
     const sql = `
       UPDATE refunds SET ${placeholder}
-      WHERE refund_id = $1
+      WHERE refund_id = $1 RETURNING *
     `;
 
     await db.query(sql, params);
@@ -76,6 +86,8 @@ module.exports = {
   },
   async resolveRefund(id, observation = null, outcomeDirection = "approve") {
     const db = await connection.client.connect();
+
+    let refundResult;
 
     const ALLOWED_OUTCOME_REFUND_STATUS = {
       approve: "refunded",
@@ -102,22 +114,22 @@ module.exports = {
       }
 
       //update refunds
-      await db.query(
-        "UPDATE refunds SET refund_status = $1 WHERE refund_id = $2",
+      refundResult = await db.query(
+        "UPDATE refunds SET refund_status = $1 WHERE refund_id = $2 RETURNING *",
         [ALLOWED_OUTCOME_REFUND_STATUS[outcomeDirection], id],
       );
 
       //update incidents
       if (observation) {
         await db.query(
-          "UPDATE incidents SET outcome = $1 WHERE incident_id = $2",
+          "UPDATE incidents SET outcome = $1 WHERE incident_id = $2 RETURNING *",
           [observation, refund.incident_id],
         );
       }
 
       if (outcomeDirection === "approve") {
         await db.query(
-          "UPDATE deliveries SET status = 'refunded' WHERE delivery_id = $1",[
+          "UPDATE deliveries SET status = 'refunded' WHERE delivery_id = $1 RETURNING *",[
             refund.delivery_id
           ],
         );
@@ -130,5 +142,6 @@ module.exports = {
     } finally {
       db.release();
     }
+    return refundResult.rows;
   },
 };
