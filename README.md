@@ -112,3 +112,16 @@ You should also want to add some initial data. There a **optional** command for 
     npm run db:seed
 ```
 
+## Usage
+
+The Ease Audit Delivery is a command based application, so the user interface takes place via terminal. To make it intuitive for the user, all comumication follows the same pattern: ease [entity] [opperation] [--options] [args], for example: `ease delivery list -p 1 --limit 10`. This command will return 10 (--limit 10) registers from the first page (-p 1) of deliveries.
+
+> **Tip:** you always can type -h after command to get help of how to use it.
+
+### General list options
+| Option | type | Description | Default |
+|--------|------|-------------|---------|
+| -p, --offset | int | Current page returned from the paginated list. | 1 |
+| -l, --limit | int | Amount of items per page. | 5 |
+| --filter-by | string | Return all values with that column equals to --filter-val value. --filter-val is required for this options. | - |
+| --filter-val | string | Value whose return will be filtered. Required: --filter-by | - |
