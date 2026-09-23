@@ -12,6 +12,10 @@ const { recordEvent } = require("./event-audit.service");
 const entityName = "refund";
 
 module.exports = {
+  async get(id) {
+    const result = await findById(id);
+    console.log(result);
+  },
   async find(data) {
     const result = await findRefunds(data);
     printResultsTable(result);

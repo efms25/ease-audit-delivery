@@ -1,10 +1,18 @@
-const { find, update, create, approve, reject } = require("../services/refund.service");
+const { find, update, create, approve, reject, get } = require("../services/refund.service");
 const {
   addFilterOptions,
   addPaginationOptions,
 } = require("./command-fragments.helper");
 
 function registerQueryRefundCommands(refund) {
+  refund
+    .command("get <number>")
+    .description("Get a refund by id")
+    .action(async (arg) => {
+      await get(arg);
+      process.exit(0);
+    })
+
   const list = refund
     .command("list")
     .description("Return a list of refunds")
