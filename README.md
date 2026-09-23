@@ -125,3 +125,54 @@ The Ease Audit Delivery is a command based application, so the user interface ta
 | -l, --limit | int | Amount of items per page. | 5 |
 | --filter-by | string | Return all values with that column equals to --filter-val value. --filter-val is required for this options. | - |
 | --filter-val | string | Value whose return will be filtered. Required: --filter-by | - |
+
+### Delivery
+
+Get a one delivery by id (for example, if id is 20):
+
+```
+ease delivery get 20 -p 1 -l 10
+```
+
+possible opperations: 
+| command | Description | specific options
+|---------|-------------|------------------|
+| get | Get a one delivery by id. | |
+| list | Query a list of deliveries | |
+| list:assigned | Query all deliveries with client and driver assigned | |
+| list:bind-incidents | Query all deliveries and bind its incidents | |
+| create | Creates a new delivery |--client <int> REQUIRED, --driver <int>, --item <string> REQUIRED, --address <string> REQUIRED, --status ['created' | 'undelivered' | 'pending' | 'delivered']
+| update | Update a delivery | --id: <int> REQUIRED, --client_id <int>,  --driver_id <int>,  --item_name <string>,  --address <string>,  --status ['created' | 'undelivered' | 'pending' | 'delivered'] 
+
+### Incident
+
+Get a one incident by id (for example, if id is 20):
+
+```
+ease incident get 20 -p 1 -l 10
+```
+
+possible opperations: 
+| command | Description | specific options
+|---------|-------------|------------------|
+| list | Query a list of incident | |
+| create | Creates a new incident | --delivery <int> REQUIRED, --incident_time <string> REQUIRED, --description <string> REQUIRED, --outcome <string>
+| update | Update a incident |  --id: <int> REQUIRED, --delivery <int>, --incident_time <string>, --description <string>, --outcome <string>
+
+### Refund
+
+Get a one refund by id (for example, if refund id is 20):
+
+```
+ease refund approve 10
+```
+
+possible opperations: 
+| command | Description | specific options
+|---------|-------------|------------------|
+| get | Get a one refund by id. | |
+| list | Query a list of refund | |
+| create | Creates a new refund | --incident <int> REQUIRED
+| update | Update a refund |  --id: <int> REQUIRED, --incident <int>,  --status ['in_process' | 'not_refunded' | 'refunded']
+| approve | Aprove a refund |  |
+| reject | Update a refund |  |
