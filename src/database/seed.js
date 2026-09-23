@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { readdir, readFile } = require("node:fs/promises");
 const { connection } = require("../database/connection");
 const { isTableCreated, isTableEmpty } = require("./validations");

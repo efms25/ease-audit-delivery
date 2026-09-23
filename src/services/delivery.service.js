@@ -8,6 +8,7 @@ module.exports = {
     },
     async find(data) {
         const result = await find(data);
+        console.log(result, 'result del')
         printResultsTable(result);
     },
     async findAssigned(data) {

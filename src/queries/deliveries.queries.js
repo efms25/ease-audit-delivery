@@ -59,12 +59,14 @@ module.exports = {
     const result = await db.query(sql, params);
     const pagination = await paginationCounter(filteredQuery, data, params);
 
-    await setDeliveryCache(cacheKey, result.rows);
-
-    return {
+    
+    const paginatedResult = {
       data: result.rows,
       pagination,
     };
+    
+    await setDeliveryCache(cacheKey, paginatedResult);
+    return paginatedResult;
   },
   async findById(id) {
     const db = connection.client;
@@ -87,7 +89,7 @@ module.exports = {
     return result.rows;
   },
   async findAssigned(args = {}) {
-    const data = { ...defaultData, ...args, allowedTypes };
+    const data = { ...defaultData, ...args, allowedTypes: ALLOWED_FILTERS };
     const db = connection.client;
     const params = [];
 
@@ -133,12 +135,14 @@ module.exports = {
     const result = await db.query(sql, params);
     const pagination = await paginationCounter(filteredQuery, data, params);
 
-    await setDeliveryCache(cacheKey, result.rows);
-
-    return {
+    
+    const paginatedResults = {
       data: result.rows,
       pagination,
     };
+    await setDeliveryCache(cacheKey, paginatedResults);
+
+    return paginatedResults;
   },
   async findWithIncidents(args = {}) {
     const allowedTypes = {
@@ -148,6 +152,7 @@ module.exports = {
         incident: "incident_id",
       },
     };
+
     const data = { ...defaultData, ...args, allowedTypes };
     const db = connection.client;
     const params = [];
@@ -190,12 +195,14 @@ module.exports = {
     const result = await db.query(sql, params);
     const pagination = await paginationCounter(filteredQuery, data, params);
 
-    await setDeliveryCache(cacheKey, result.rows);
-
-    return {
+    
+    const paginatedResult = {
       data: result.rows,
       pagination,
     };
+    await setDeliveryCache(cacheKey, paginatedResult);
+
+    return paginatedResult
   },
   async createDelivery(dataObject) {
     const db = connection.client;

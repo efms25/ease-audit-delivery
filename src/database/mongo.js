@@ -9,8 +9,9 @@ const access = {
   password: encodeURIComponent(
     process.env.MONGO_INITDB_ROOT_PASSWORD ?? "ease_mongo_pass",
   ),
-  dbName: process.env.MONGO_INITDB_DATABASE ?? "ease_asudit",
+  dbName: process.env.MONGO_INITDB_DATABASE ?? "easeAudit",
 };
+
 
 const uri = `mongodb://${access.username}:${access.password}@${access.host}:${access.port}/${access.dbName}?authSource=admin`;
 const client = new MongoClient(uri, {
